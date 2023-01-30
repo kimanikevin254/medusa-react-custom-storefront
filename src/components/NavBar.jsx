@@ -5,16 +5,18 @@ import { MedusaContext } from '../context/MedusaContext'
 const NavBar = () => {
     const [show, setShow] = useState(false)
     const [items, setItems] = useState([])
+    const [cart, setCart] = useState()
 
     const medusaContext = useContext(MedusaContext)
 
     // functions to handle modal closing and opening
     const handleShow = () => {
         setShow(true)
-        const items = medusaContext.getACart()
-        .then(res => {
-            setItems(res)
-            console.log(res)
+        medusaContext.getACart()
+        .then(({ cart }) => {
+            setItems(cart.items)
+            setCart(cart)
+            console.log(cart)
         })
     }
     const handleClose = () => setShow(false)
@@ -64,6 +66,18 @@ const NavBar = () => {
                         </tr>
                     ))
                 }
+                <tr>
+                    <td colSpan='5' className="text-end">Sub total:</td>
+                    <td>€ {cart?.subtotal}</td>
+                </tr>
+                <tr>
+                    <td colSpan='5' className="text-end">Tax:</td>
+                    <td>€ {cart?.tax_total}</td>
+                </tr>
+                <tr>
+                    <td colSpan='5' className="text-end">Total:</td>
+                    <td>€ {cart?.total}</td>
+                </tr>
             </tbody>
             </Table> :
 

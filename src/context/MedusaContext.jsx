@@ -56,8 +56,8 @@ export function MedusaProvider({children}){
     //get a cart
     const getACart = async () => {
         const CartId = localStorage.getItem('CartId')
-        const { cart: { items } } = await medusaClient.carts.retrieve(CartId)
-        return items
+        const { cart } = await medusaClient.carts.retrieve(CartId)
+        return { cart }
         // setCartProducts(items)
         // console.log(items)
     }
