@@ -1,5 +1,5 @@
-import React, { useContext, useState } from 'react'
-import { Button, Navbar, Modal, Table } from 'react-bootstrap';
+import React, { useContext, useState, useEffect } from 'react'
+import { Button, Navbar, Modal, Table, Container } from 'react-bootstrap';
 import { MedusaContext } from '../context/MedusaContext'
 
 const NavBar = () => {
@@ -9,6 +9,16 @@ const NavBar = () => {
 
     const medusaContext = useContext(MedusaContext)
 
+    const [cartCount, setCartCount] = useState(0)
+
+    useEffect(() => {
+        const getCartCountValue = async () => {
+            const count = await medusaContext.getCartCount()
+            setCartCount(count)
+        }
+        getCartCountValue()
+    }, [medusaContext])
+
     // functions to handle modal closing and opening
     const handleShow = () => {
         setShow(true)
@@ -16,7 +26,7 @@ const NavBar = () => {
         .then(({ cart }) => {
             setItems(cart.items)
             setCart(cart)
-            console.log(cart)
+            console.log(cart.items)
         })
     }
     const handleClose = () => setShow(false)
@@ -29,7 +39,7 @@ const NavBar = () => {
 
         {/* The items to collapse */}
         <Navbar.Collapse className='justify-content-end'>
-          <Button variant='success' onClick={handleShow}>Cart (n Items)</Button>
+          <Button variant='success' onClick={handleShow}>Cart ({cartCount} Items)</Button>
         </Navbar.Collapse>
       </Navbar>
 
@@ -41,6 +51,8 @@ const NavBar = () => {
         <Modal.Body>
             {
                 items ?
+
+                <Container  className="d-flex flex-column" style={{ width: "100%", justifyContent: "center" }}>
 
                 <Table>
             <thead>
@@ -79,7 +91,10 @@ const NavBar = () => {
                     <td>€ {cart?.total}</td>
                 </tr>
             </tbody>
-            </Table> :
+            </Table> 
+            <Button variant='success' className='mt-4 mx-auto'>Checkout</Button>
+            
+            </Container> :
 
             <p>no items</p>
             }

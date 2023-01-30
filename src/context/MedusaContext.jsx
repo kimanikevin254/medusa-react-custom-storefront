@@ -2,16 +2,17 @@ import { createContext, useState } from "react";
 import medusaClient from '../utils/medusaClient'
 
 export const MedusaContext = createContext({
-    // items: [],
+    items: 0,
     getAllProducts: () => {},
     getOneProduct: () => {},
     createACart: () => {},
     addALineItem: () => {},
     getACart: () => {},
+    getCartCount: () => {},
 })
 
 export function MedusaProvider({children}){
-    const [cartProducts, setCartProducts] = useState([])
+    const [items, setItems] = useState(0)
     // fetch all products from the server
     const getAllProducts = async () => {
         const { products } = await medusaClient.products.list()
@@ -32,10 +33,11 @@ export function MedusaProvider({children}){
 
     // add a line item to cart
     const addALineItem = async (cartId, variantId) => {
-        await medusaClient.carts.lineItems.create(cartId, {
+        const { cart } = await medusaClient.carts.lineItems.create(cartId, {
             variant_id: variantId,
             quantity: 1
         })
+        setItems(items + 1)
     }
 
     // create a cart
@@ -62,12 +64,28 @@ export function MedusaProvider({children}){
         // console.log(items)
     }
 
+    //get cart items count
+    const getCartCount = async () => {
+        const { cart } = await getACart()
+
+        let cartCount = 0
+
+        cart?.items?.map(item => cartCount += item.quantity)
+
+        return cartCount
+        // const { cart } = await getACart()
+        // setItems(cart.items)
+
+    }
+
     const contextValue = {
         getAllProducts,
         getOneProduct,
         createACart,
         addALineItem,
         getACart,
+        getCartCount,
+        items
     }
 
     return (
