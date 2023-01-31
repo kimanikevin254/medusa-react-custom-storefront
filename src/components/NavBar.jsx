@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { Button, Navbar, Modal, Table, Container } from 'react-bootstrap';
 import { MedusaContext } from '../context/MedusaContext'
+import { Link } from 'react-router-dom';
 
 const NavBar = () => {
     const [show, setShow] = useState(false)
@@ -12,11 +13,9 @@ const NavBar = () => {
     const [cartCount, setCartCount] = useState(0)
 
     useEffect(() => {
-        const getCartCountValue = async () => {
-            const count = await medusaContext.getCartCount()
-            setCartCount(count)
-        }
-        getCartCountValue()
+        medusaContext.getCartCount()
+            .then(res => setCartCount(res))
+
     }, [medusaContext])
 
     // functions to handle modal closing and opening
@@ -92,7 +91,9 @@ const NavBar = () => {
                 </tr>
             </tbody>
             </Table> 
-            <Button variant='success' className='mt-4 mx-auto'>Checkout</Button>
+            <Link to='/checkout' className='d-flex'>
+                <Button variant='success' className='mt-4 mx-auto' onClick={handleClose}>Checkout</Button>
+            </Link>
             
             </Container> :
 

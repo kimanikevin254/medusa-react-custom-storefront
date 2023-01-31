@@ -2,17 +2,21 @@ import { createContext, useState } from "react";
 import medusaClient from '../utils/medusaClient'
 
 export const MedusaContext = createContext({
-    items: 0,
     getAllProducts: () => {},
     getOneProduct: () => {},
     createACart: () => {},
     addALineItem: () => {},
     getACart: () => {},
     getCartCount: () => {},
+    addShippingAddress: () => {},
+    availableShippingOptions: [],
+    showShippingOptions: Boolean,
+    addShippingOption: () => {},
 })
 
 export function MedusaProvider({children}){
-    const [items, setItems] = useState(0)
+    const [availableShippingOptions, setAvailableShippingOptions] = useState([])
+    const [showShippingOptions, setShowShippingOptions] = useState(false)
     // fetch all products from the server
     const getAllProducts = async () => {
         const { products } = await medusaClient.products.list()
@@ -37,7 +41,7 @@ export function MedusaProvider({children}){
             variant_id: variantId,
             quantity: 1
         })
-        setItems(items + 1)
+        return cart;
     }
 
     // create a cart
@@ -60,8 +64,6 @@ export function MedusaProvider({children}){
         const CartId = localStorage.getItem('CartId')
         const { cart } = await medusaClient.carts.retrieve(CartId)
         return { cart }
-        // setCartProducts(items)
-        // console.log(items)
     }
 
     //get cart items count
@@ -73,9 +75,57 @@ export function MedusaProvider({children}){
         cart?.items?.map(item => cartCount += item.quantity)
 
         return cartCount
-        // const { cart } = await getACart()
-        // setItems(cart.items)
+    }
 
+    // update cart with the shipping address
+    const addShippingAddress = async (e, shippingAddress) => {
+        e.preventDefault()
+
+        const CartId = localStorage.getItem('CartId')
+
+        let { company, firstName, lastName, address1, address2, city, postalCode, phone, email } = shippingAddress 
+
+        const { cart: { shipping_address } } = await medusaClient.carts.update(CartId, {
+            shipping_address: {
+                company,
+                first_name: firstName,
+                last_name: lastName,
+                address_1: address1,
+                address_2: address2,
+                city,
+                postal_code: postalCode,
+                phone
+            }
+        })
+
+        // update the cart with the user's email
+        await medusaClient.carts.update(CartId, {
+            email: email
+        })
+
+        // retrieve the list of updated shipping options
+        const { shipping_options } = await medusaClient.shippingOptions.listCartOptions(CartId)
+        console.log(shipping_options)
+        setAvailableShippingOptions(shipping_options)
+
+        // show the available shipping options
+        setShowShippingOptions(true)
+    }
+
+    // choose shipping option
+    const addShippingOption = async (id) => {
+        const CartId = localStorage.getItem('CartId')
+
+        await medusaClient.carts.addShippingMethod(CartId, {
+            option_id: id, // the ID of the selected option
+          })
+
+        // initialize a payment session
+        await medusaClient.carts.createPaymentSessions(CartId)
+
+        await medusaClient.carts.setPaymentSession(CartId, {
+            provider_id: 'stripe',
+        })
     }
 
     const contextValue = {
@@ -85,7 +135,10 @@ export function MedusaProvider({children}){
         addALineItem,
         getACart,
         getCartCount,
-        items
+        addShippingAddress,
+        availableShippingOptions,
+        showShippingOptions,
+        addShippingOption
     }
 
     return (
