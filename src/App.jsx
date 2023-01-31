@@ -6,6 +6,7 @@ import { Routes, Route } from 'react-router-dom';
 import Homepage from './pages/Homepage';
 import Product from './pages/Product';
 import Checkout from './pages/Checkout';
+import Payment from './pages/Payment';
 
 function App() {
 
@@ -16,7 +17,8 @@ function App() {
           <Routes>
             <Route index element={<Homepage />} />
             <Route path='/product/:id' element={<Product />} />
-            <Route path='checkout' element={<Checkout />} />
+            <Route path='/checkout' element={<Checkout />} />
+            <Route path='/checkout/payment' element={<Payment />} />
           </Routes>
       </Container>
     </MedusaProvider>

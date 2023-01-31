@@ -12,11 +12,17 @@ export const MedusaContext = createContext({
     availableShippingOptions: [],
     showShippingOptions: Boolean,
     addShippingOption: () => {},
+    paymentSession: {},
+    billingDetails: {},
+    custEmail: '',
 })
 
 export function MedusaProvider({children}){
     const [availableShippingOptions, setAvailableShippingOptions] = useState([])
     const [showShippingOptions, setShowShippingOptions] = useState(false)
+    const [paymentSession, setPaymentSession] = useState(null)
+    const [billingDetails, setBillingDetails] = useState(null)
+    const [custEmail, setCustEmail] = useState('')
     // fetch all products from the server
     const getAllProducts = async () => {
         const { products } = await medusaClient.products.list()
@@ -123,9 +129,14 @@ export function MedusaProvider({children}){
         // initialize a payment session
         await medusaClient.carts.createPaymentSessions(CartId)
 
-        await medusaClient.carts.setPaymentSession(CartId, {
+        const { cart } = await medusaClient.carts.setPaymentSession(CartId, {
             provider_id: 'stripe',
         })
+        setPaymentSession(cart.payment_session)
+        setBillingDetails(cart.shipping_address)
+        setCustEmail(cart.email)
+        console.log(cart.payment_session)
+        console.log(cart)
     }
 
     const contextValue = {
@@ -138,7 +149,10 @@ export function MedusaProvider({children}){
         addShippingAddress,
         availableShippingOptions,
         showShippingOptions,
-        addShippingOption
+        addShippingOption,
+        billingDetails, 
+        custEmail,
+        paymentSession
     }
 
     return (

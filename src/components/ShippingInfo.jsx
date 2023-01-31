@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
 import { Form, Button, Container, Row, Col} from 'react-bootstrap'
 import { MedusaContext } from '../context/MedusaContext'
+import { Link } from 'react-router-dom'
 
 const ShippingAddress = () => {
     const medusaContext = useContext(MedusaContext)
@@ -104,6 +105,9 @@ const ShippingAddress = () => {
                             </div>
                         ))
                     }
+                    <Link to='/checkout/payment'>
+                        <Button>Proceed to Payment</Button>
+                    </Link>
                 </Container> :
 
                 <></>
