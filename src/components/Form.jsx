@@ -7,17 +7,14 @@ import {
   import { MedusaContext } from '../context/MedusaContext'
   import { useContext } from "react"
   import medusaClient from "../utils/medusaClient"
+import { Button } from "react-bootstrap"
 
   
   export default function Form({ clientSecret, CartId }) {
     const medusaContext = useContext(MedusaContext)
 
-    // const CartId = localStorage.getItem('CartId')
-    // const clientSecret = medusaContext.paymentSession?.data.client_secret
     const billingDetails = medusaContext.billingDetails
 
-    console.log('billingDetails')
-    
     const stripe = useStripe()
     const elements = useElements()
   
@@ -42,13 +39,14 @@ import {
           }).then(({ error, paymentIntent }) => {
             // TODO handle errors
             medusaClient.carts.complete(CartId).then((resp) => console.log(resp))
+            localStorage.removeItem('CartId')
           })
     }
   
     return (
-      <form>
+      <form className="my-4">
         <CardElement />
-        <button onClick={handlePayment}>Submit</button>
+        <Button variant='success' className="mt-3" onClick={handlePayment}>Submit</Button>
     </form>
     )
   };
