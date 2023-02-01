@@ -24,7 +24,7 @@ const Payment = () => {
         <h3>Stripe Card Payment</h3>
 
         <Alert variant='info'>
-          <Alert.Heading>Stripe card payment loading</Alert.Heading>
+          <Alert.Heading>Please wait for Stripe card payment to load...</Alert.Heading>
         </Alert>
         </>
       }

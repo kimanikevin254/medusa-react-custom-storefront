@@ -44,7 +44,7 @@ import { useNavigate } from 'react-router-dom'
             medusaClient.carts.complete(CartId).then((resp) => {
               console.log(resp)
               localStorage.removeItem('CartId')
-              navigate('/')
+              navigate(0)
             })
           })
     }
