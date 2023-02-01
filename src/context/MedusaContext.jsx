@@ -87,7 +87,12 @@ export function MedusaProvider({children}){
         if(CartId){
             const { cart } = await getACart()
 
-            setCartCount(cart?.items?.length)
+            let noOfCartItems = 0
+
+            cart.items.map(item => noOfCartItems += item.quantity)
+
+            // setCartCount(cart?.items?.length)
+            setCartCount(noOfCartItems)
 
             return cartCount
         }
