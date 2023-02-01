@@ -15,6 +15,7 @@ export const MedusaContext = createContext({
     paymentSession: {},
     billingDetails: {},
     custEmail: '',
+    cartCount: 0
 })
 
 export function MedusaProvider({children}){
@@ -23,6 +24,9 @@ export function MedusaProvider({children}){
     const [paymentSession, setPaymentSession] = useState(null)
     const [billingDetails, setBillingDetails] = useState(null)
     const [custEmail, setCustEmail] = useState('')
+
+    const [cartCount, setCartCount] = useState(0)
+
     // fetch all products from the server
     const getAllProducts = async () => {
         const { products } = await medusaClient.products.list()
@@ -47,7 +51,7 @@ export function MedusaProvider({children}){
             variant_id: variantId,
             quantity: 1
         })
-        return cart;
+        return getCartCount();
     }
 
     // create a cart
@@ -83,9 +87,7 @@ export function MedusaProvider({children}){
         if(CartId){
             const { cart } = await getACart()
 
-            let cartCount = 0
-
-            cart?.items?.map(item => cartCount += item.quantity)
+            setCartCount(cart?.items?.length)
 
             return cartCount
         }
