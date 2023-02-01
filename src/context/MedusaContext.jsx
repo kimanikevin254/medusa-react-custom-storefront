@@ -15,7 +15,8 @@ export const MedusaContext = createContext({
     paymentSession: {},
     billingDetails: {},
     custEmail: '',
-    cartCount: 0
+    cartCount: 0,
+    showPayment: Boolean
 })
 
 export function MedusaProvider({children}){
@@ -26,6 +27,8 @@ export function MedusaProvider({children}){
     const [custEmail, setCustEmail] = useState('')
 
     const [cartCount, setCartCount] = useState(0)
+
+    const [showPayment, setShowPayment] = useState(false)
 
     // fetch all products from the server
     const getAllProducts = async () => {
@@ -135,6 +138,8 @@ export function MedusaProvider({children}){
 
     // choose shipping option
     const addShippingOption = async (id) => {
+        setShowPayment(true)
+        
         const CartId = localStorage.getItem('CartId')
 
         await medusaClient.carts.addShippingMethod(CartId, {
@@ -167,7 +172,8 @@ export function MedusaProvider({children}){
         addShippingOption,
         billingDetails, 
         custEmail,
-        paymentSession
+        paymentSession,
+        showPayment
     }
 
     return (
