@@ -75,22 +75,22 @@ const NavBar = () => {
                             <td><img src={item.thumbnail} alt={item.title} style={{maxWidth: '100px'}} /></td>
                             <td>{item.title}</td>
                             <td>{item.quantity}</td>
-                            <td>€ {item.unit_price}</td>
-                            <td>€ {item.total}</td>
+                            <td>€ {(item.unit_price / 100).toFixed(2)}</td>
+                            <td>€ {(item.total / 100).toFixed(2)}</td>
                         </tr>
                     ))
                 }
                 <tr>
                     <td colSpan='5' className="text-end">Sub total:</td>
-                    <td>€ {cart?.subtotal}</td>
+                    <td>€ {(cart?.subtotal / 100).toFixed(2)}</td>
                 </tr>
                 <tr>
                     <td colSpan='5' className="text-end">Tax:</td>
-                    <td>€ {cart?.tax_total}</td>
+                    <td>€ {(cart?.tax_total / 100).toFixed(2)}</td>
                 </tr>
                 <tr>
                     <td colSpan='5' className="text-end">Total:</td>
-                    <td>€ {cart?.total}</td>
+                    <td>€ {(cart?.total / 100).toFixed(2)}</td>
                 </tr>
             </tbody>
             </Table> 

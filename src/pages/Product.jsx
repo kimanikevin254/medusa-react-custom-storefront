@@ -25,7 +25,7 @@ const Product = () => {
             <Col className='py-5 d-flex flex-column justify-content-around align-items-center'>
                 <h3>{product.title}</h3>
                 <p>{product.description}</p>
-                <h5>€ {product.variants?.[0]?.prices?.[0]?.amount}</h5>
+                <h5>€ {(product.variants?.[0]?.prices?.[0]?.amount / 100).toFixed(2)}</h5>
                 <Button variant='success' onClick={() => medusaContext.createACart(product.variants?.[0]?.id)}>Add to Cart</Button>
             </Col>
         </Row>
