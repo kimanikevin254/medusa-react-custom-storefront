@@ -68,19 +68,27 @@ export function MedusaProvider({children}){
     //get a cart
     const getACart = async () => {
         const CartId = localStorage.getItem('CartId')
-        const { cart } = await medusaClient.carts.retrieve(CartId)
-        return { cart }
+        if(CartId){
+            const { cart } = await medusaClient.carts.retrieve(CartId)
+            return { cart }
+        }else{
+            return 
+        }
     }
 
     //get cart items count
     const getCartCount = async () => {
-        const { cart } = await getACart()
+        const CartId = localStorage.getItem('CartId')
 
-        let cartCount = 0
+        if(CartId){
+            const { cart } = await getACart()
 
-        cart?.items?.map(item => cartCount += item.quantity)
+            let cartCount = 0
 
-        return cartCount
+            cart?.items?.map(item => cartCount += item.quantity)
+
+            return cartCount
+        }
     }
 
     // update cart with the shipping address

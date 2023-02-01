@@ -8,6 +8,7 @@ import {
   import { useContext } from "react"
   import medusaClient from "../utils/medusaClient"
 import { Button } from "react-bootstrap"
+import { useNavigate } from 'react-router-dom'
 
   
   export default function Form({ clientSecret, CartId }) {
@@ -17,6 +18,8 @@ import { Button } from "react-bootstrap"
 
     const stripe = useStripe()
     const elements = useElements()
+
+    const navigate = useNavigate()
   
     const handlePayment = (e) => {
         e.preventDefault();
@@ -38,8 +41,11 @@ import { Button } from "react-bootstrap"
             },
           }).then(({ error, paymentIntent }) => {
             // TODO handle errors
-            medusaClient.carts.complete(CartId).then((resp) => console.log(resp))
-            localStorage.removeItem('CartId')
+            medusaClient.carts.complete(CartId).then((resp) => {
+              console.log(resp)
+              localStorage.removeItem('CartId')
+              navigate('/')
+            })
           })
     }
   

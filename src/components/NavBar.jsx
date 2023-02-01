@@ -20,13 +20,16 @@ const NavBar = () => {
 
     // functions to handle modal closing and opening
     const handleShow = () => {
+        const CartId = localStorage.getItem('CartId')
         setShow(true)
-        medusaContext.getACart()
-        .then(({ cart }) => {
-            setItems(cart.items)
-            setCart(cart)
-            console.log(cart.items)
-        })
+        if(CartId){
+            medusaContext.getACart()
+            .then(({ cart }) => {
+                setItems(cart.items)
+                setCart(cart)
+                console.log(cart.items)
+            })
+        }
     }
     const handleClose = () => setShow(false)
 
@@ -49,7 +52,7 @@ const NavBar = () => {
         </Modal.Header>
         <Modal.Body>
             {
-                items ?
+                items.length>0 ?
 
                 <Container  className="d-flex flex-column" style={{ width: "100%", justifyContent: "center" }}>
 
